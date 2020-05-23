@@ -9,8 +9,13 @@ import de.rhocas.nce.msv.domain.port.Console;
 public final class SysOutConsole implements Console {
 
 	@Override
-	public void print( final String msg ) {
-		System.out.println( msg );
+	public void printMessage( final String message ) {
+		System.out.println( message );
+	}
+
+	@Override
+	public void printError( final String error ) {
+		System.err.println( error );
 	}
 
 }

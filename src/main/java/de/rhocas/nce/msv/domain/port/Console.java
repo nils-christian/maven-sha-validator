@@ -7,9 +7,16 @@ public interface Console {
 
 	/**
 	 * Prints the given message on the console.
-	 * 
+	 *
 	 * @param msg The message to print.
 	 */
-	void print( String msg );
+	void printMessage( String message );
+
+	/**
+	 * Prints the given error on the console.
+	 *
+	 * @param error The error to print.
+	 */
+	void printError( String error );
 
 }

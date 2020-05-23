@@ -9,10 +9,16 @@ import de.rhocas.nce.msv.domain.port.Console;
 final class SysOutConsoleTest {
 
 	@Test
-	@DisplayName( "Print should work" )
-	void printShouldWork( ) {
+	@DisplayName( "PrintMessage should work" )
+	void printMessageShouldWork( ) {
 		final Console console = new SysOutConsole( );
-		console.print( "Test" );
+		console.printMessage( "Test" );
 	}
 
+	@Test
+	@DisplayName( "PrintError should work" )
+	void printErrorShouldWork( ) {
+		final Console console = new SysOutConsole( );
+		console.printError( "Test" );
+	}
 }

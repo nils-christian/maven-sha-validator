@@ -47,19 +47,19 @@ public final class MavenSHAValidatorCommand implements Callable<Integer> {
 		final Either<RootDirectoryCannotBeAccessed, List<File>> eitherErrorOrInvalidFiles = listInvalidFiles.listInvalidFiles( repositoryPath, ignorePathPrefixes );
 
 		if ( eitherErrorOrInvalidFiles.isLeft( ) ) {
-			console.print( MessageFormat.format( "The given directory ''{0}'' cannot be accessed.", repositoryPath ) );
+			console.printError( MessageFormat.format( "The given directory ''{0}'' cannot be accessed.", repositoryPath ) );
 			return -1;
 		}
 
 		final List<File> invalidFiles = eitherErrorOrInvalidFiles.get( );
 		invalidFiles.stream( )
 				.map( invalidFile -> MessageFormat.format( "Invalid file detected: {0}", invalidFile ) )
-				.forEach( msg -> console.print( msg ) );
+				.forEach( msg -> console.printMessage( msg ) );
 
 		if ( remove ) {
 			final Option<FilesCannotBeRemoved> optionalError = removeInvalidFiles.remove( invalidFiles );
 			if ( !optionalError.isEmpty( ) ) {
-				console.print( MessageFormat.format( "Following files could not be removed:", optionalError.get( ).getUnremovableFiles( ) ) );
+				console.printError( MessageFormat.format( "Following files could not be removed:", optionalError.get( ).getUnremovableFiles( ) ) );
 				return -2;
 			}
 		}
