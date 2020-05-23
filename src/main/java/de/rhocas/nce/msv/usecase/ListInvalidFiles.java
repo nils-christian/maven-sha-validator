@@ -33,16 +33,19 @@ public final class ListInvalidFiles {
 	/**
 	 * Lists all invalid files starting with the given directory.
 	 *
-	 * @param directory The directory to start with.
+	 * @param directory          The directory to start with.
+	 * @param ignorePathPrefixes The path prefixes (relative to the directory) to
+	 *                           ignore.
 	 *
 	 * @return Either an error, if the root directory cannot be accessed, or a list
 	 *         with the invalid files.
 	 */
-	public Either<RootDirectoryCannotBeAccessed, List<File>> listInvalidFiles( final Path directory ) {
+	public Either<RootDirectoryCannotBeAccessed, List<File>> listInvalidFiles( final Path directory, final List<String> ignorePathPrefixes ) {
 		final Either<RootDirectoryCannotBeAccessed, List<File>> eitherErrorOrFiles = fileSystem.listFilesInDirectory( directory );
 		final Either<RootDirectoryCannotBeAccessed, List<File>> eitherErrorOrInvalidFiles = eitherErrorOrFiles
 				.map( files -> files.parallelStream( )
 						.filter( path -> isRelevantForValidation( path ) )
+						.filter( path -> isNotIgnored( path, ignorePathPrefixes ) )
 						.filter( path -> isInvalid( path ) )
 						.collect( Collectors.toList( ) ) );
 
@@ -55,6 +58,13 @@ public final class ListInvalidFiles {
 
 	private boolean hasAnyExtension( final File file, final String... extensions ) {
 		return Stream.of( extensions ).anyMatch( extension -> file.getExtension( ).exists( pred -> pred.equalsIgnoreCase( extension ) ) );
+	}
+
+	private boolean isNotIgnored( final File file, final List<String> ignorePathPrefixes ) {
+		final String pathRelativeToDirectory = file.getPathRelativeToDirectory( ).toLowerCase( );
+		return ignorePathPrefixes.stream( )
+				.map( prefix -> prefix.toLowerCase( ) )
+				.noneMatch( prefix -> pathRelativeToDirectory.startsWith( prefix ) );
 	}
 
 	private boolean isInvalid( final File path ) {

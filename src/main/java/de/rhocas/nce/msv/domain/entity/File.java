@@ -11,10 +11,12 @@ public final class File {
 
 	private final Path path;
 	private final String extension;
+	private final Path rootDirectory;
 
-	public File( final Path path, final String extension ) {
+	public File( final Path path, final String extension, final Path rootDirectory ) {
 		this.path = path;
 		this.extension = extension;
+		this.rootDirectory = rootDirectory;
 	}
 
 	public Option<String> getExtension( ) {
@@ -32,6 +34,14 @@ public final class File {
 	@Override
 	public String toString( ) {
 		return path.toString( );
+	}
+
+	public Path getRootDirectory( ) {
+		return rootDirectory;
+	}
+
+	public String getPathRelativeToDirectory( ) {
+		return rootDirectory.relativize( path ).toString( );
 	}
 
 }

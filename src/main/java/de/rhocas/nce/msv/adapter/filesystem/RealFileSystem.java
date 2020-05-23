@@ -26,15 +26,15 @@ public final class RealFileSystem implements FileSystem {
 		try ( Stream<Path> stream = Files.walk( directory ) ) {
 			return Either.right( stream
 					.filter( path -> Files.isRegularFile( path ) )
-					.map( path -> pathToFile( path ) )
+					.map( path -> pathToFile( path, directory ) )
 					.collect( Collectors.toList( ) ) );
 		} catch ( final IOException ex ) {
 			return Either.left( new RootDirectoryCannotBeAccessed( ) );
 		}
 	}
 
-	private File pathToFile( final Path path ) {
-		return new File( path, findExtension( path ) );
+	private File pathToFile( final Path path, final Path directory ) {
+		return new File( path, findExtension( path ), directory );
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public final class RealFileSystem implements FileSystem {
 	@Override
 	public Option<File> getSiblingFile( final File file, final String siblingFileName ) {
 		return Option.of( file.getPath( ).resolveSibling( siblingFileName ) )
-				.map( path -> pathToFile( path ) );
+				.map( path -> pathToFile( path, file.getRootDirectory( ) ) );
 	}
 
 	@Override

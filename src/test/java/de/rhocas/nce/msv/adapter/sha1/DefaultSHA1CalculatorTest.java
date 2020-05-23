@@ -19,7 +19,7 @@ final class DefaultSHA1CalculatorTest {
 	@Test
 	@DisplayName( "Optional from file system should be routed through" )
 	void optionalFromFileSystemShouldBeRoutedThrough( ) {
-		final File file = new File( null, null );
+		final File file = new File( null, null, null );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.readBytes( file ) ).thenReturn( Option.none( ) );
@@ -33,7 +33,7 @@ final class DefaultSHA1CalculatorTest {
 	@Test
 	@DisplayName( "SHA-1 for empty String should be calculated correctly" )
 	void sha1ForEmptyStringShouldBeCalculatedCorrectly( ) {
-		final File file = new File( null, null );
+		final File file = new File( null, null, null );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.readBytes( file ) ).thenReturn( Option.of( new byte[0] ) );
@@ -47,7 +47,7 @@ final class DefaultSHA1CalculatorTest {
 	@Test
 	@DisplayName( "SHA-1 for simple String should be calculated correctly" )
 	void sha1ForSimpleStringShouldBeCalculatedCorrectly( ) {
-		final File file = new File( null, null );
+		final File file = new File( null, null, null );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.readBytes( file ) ).thenReturn( Option.of( "Franz jagt im komplett verwahrlosten Taxi quer durch Bayern".getBytes( StandardCharsets.UTF_8 ) ) );

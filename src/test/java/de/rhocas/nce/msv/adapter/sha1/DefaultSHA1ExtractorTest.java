@@ -19,7 +19,7 @@ final class DefaultSHA1ExtractorTest {
 	@Test
 	@DisplayName( "Optional from file system should be routed through" )
 	void optionalFromFileSystemShouldBeRoutedThrough( ) {
-		final File file = new File( Paths.get( "file.jar" ), null );
+		final File file = new File( Paths.get( "file.jar" ), null, Paths.get( "." ) );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.getSiblingFile( file, "file.jar.sha1" ) ).thenReturn( Option.none( ) );
@@ -33,8 +33,8 @@ final class DefaultSHA1ExtractorTest {
 	@Test
 	@DisplayName( "Optional readString from file system should be routed through" )
 	void optionalReadStringFromFileSystemShouldBeRoutedThrough( ) {
-		final File file = new File( Paths.get( "file.jar" ), "jar" );
-		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1" );
+		final File file = new File( Paths.get( "file.jar" ), "jar", Paths.get( "." ) );
+		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1", Paths.get( "." ) );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.getSiblingFile( file, "file.jar.sha1" ) ).thenReturn( Option.of( sha1File ) );
@@ -49,8 +49,8 @@ final class DefaultSHA1ExtractorTest {
 	@Test
 	@DisplayName( "Simple String should be extracted correctly" )
 	void simpleStringShouldBeExtractedCorrectly( ) {
-		final File file = new File( Paths.get( "file.jar" ), "jar" );
-		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1" );
+		final File file = new File( Paths.get( "file.jar" ), "jar", Paths.get( "." ) );
+		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1", Paths.get( "." ) );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.getSiblingFile( file, "file.jar.sha1" ) ).thenReturn( Option.of( sha1File ) );
@@ -65,8 +65,8 @@ final class DefaultSHA1ExtractorTest {
 	@Test
 	@DisplayName( "String with garbage should be extracted correctly" )
 	void stringWithGarbageShouldBeExtractedCorrectly( ) {
-		final File file = new File( Paths.get( "file.jar" ), "jar" );
-		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1" );
+		final File file = new File( Paths.get( "file.jar" ), "jar", Paths.get( "." ) );
+		final File sha1File = new File( Paths.get( "file.jar.sha1" ), "sha1", Paths.get( "." ) );
 
 		final FileSystem fileSystem = mock( FileSystem.class );
 		when( fileSystem.getSiblingFile( file, "file.jar.sha1" ) ).thenReturn( Option.of( sha1File ) );

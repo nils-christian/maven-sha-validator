@@ -2,6 +2,7 @@ package de.rhocas.nce.msv;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -28,6 +29,9 @@ public final class MavenSHAValidatorCommand implements Callable<Integer> {
 	@picocli.CommandLine.Option( names = "-r", description = "Removes the invalid files" )
 	private boolean remove;
 
+	@picocli.CommandLine.Option( names = "-i", description = "Ignores files starting with those paths (relative to the repository; multiple usages possible)" )
+	private final List<String> ignorePathPrefixes = Collections.emptyList( );
+
 	private final Console console;
 	private final ListInvalidFiles listInvalidFiles;
 	private final RemoveInvalidFiles removeInvalidFiles;
@@ -40,7 +44,7 @@ public final class MavenSHAValidatorCommand implements Callable<Integer> {
 
 	@Override
 	public Integer call( ) throws Exception {
-		final Either<RootDirectoryCannotBeAccessed, List<File>> eitherErrorOrInvalidFiles = listInvalidFiles.listInvalidFiles( repositoryPath );
+		final Either<RootDirectoryCannotBeAccessed, List<File>> eitherErrorOrInvalidFiles = listInvalidFiles.listInvalidFiles( repositoryPath, ignorePathPrefixes );
 
 		if ( eitherErrorOrInvalidFiles.isLeft( ) ) {
 			console.print( MessageFormat.format( "The given directory ''{0}'' cannot be accessed.", repositoryPath ) );
