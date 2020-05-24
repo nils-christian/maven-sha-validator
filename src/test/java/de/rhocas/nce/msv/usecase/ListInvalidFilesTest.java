@@ -73,7 +73,7 @@ final class ListInvalidFilesTest {
 	@Test
 	@DisplayName( "Ignored path prefixes should be honored" )
 	void ignoredPathPrefixesShouldBeHonored( ) {
-		final File file = new File( Paths.get( "/a/b/commons-logging-1.0.4.pom" ), "pom", Paths.get( "/a/" ) );
+		final File file = new File( Paths.get( "a" ).resolve( "b" ).resolve( "commons-logging-1.0.4.pom" ), "pom", Paths.get( "a" ) );
 
 		final Path directory = Paths.get( "repository" );
 
@@ -83,7 +83,7 @@ final class ListInvalidFilesTest {
 		final SHA1Extractor sha1Extractor = mock( SHA1Extractor.class );
 
 		final ListInvalidFiles listInvalidFiles = new ListInvalidFiles( fileSystem, sha1Calculator, sha1Extractor );
-		final Either<RootDirectoryCannotBeAccessed, List<File>> result = listInvalidFiles.listInvalidFiles( directory, Collections.singletonList( "B/" ) );
+		final Either<RootDirectoryCannotBeAccessed, List<File>> result = listInvalidFiles.listInvalidFiles( directory, Collections.singletonList( "B" ) );
 
 		verifyNoInteractions( sha1Calculator );
 		verifyNoInteractions( sha1Extractor );
