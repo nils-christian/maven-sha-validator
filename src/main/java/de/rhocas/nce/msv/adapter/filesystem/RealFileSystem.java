@@ -74,6 +74,7 @@ public final class RealFileSystem implements FileSystem {
 	@Override
 	public Option<File> getSiblingFile( final File file, final String siblingFileName ) {
 		return Option.of( file.getPath( ).resolveSibling( siblingFileName ) )
+				.filter( path -> Files.isRegularFile( path ) )
 				.map( path -> pathToFile( path, file.getRootDirectory( ) ) );
 	}
 
