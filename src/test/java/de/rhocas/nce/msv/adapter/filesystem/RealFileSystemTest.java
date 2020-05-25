@@ -2,9 +2,11 @@ package de.rhocas.nce.msv.adapter.filesystem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -12,6 +14,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.rhocas.nce.msv.domain.entity.File;
 import de.rhocas.nce.msv.domain.error.FilesCannotBeRemoved;
@@ -22,6 +25,25 @@ import io.vavr.control.Option;
 
 @DisplayName( "Unit-Test for RealFileSystem" )
 final class RealFileSystemTest {
+
+	@TempDir
+	Path tempDir;
+
+	@Test
+	@DisplayName( "listFilesInDirectory should return files" )
+	void listFilesInDirectoryShouldReturnFiles( ) throws URISyntaxException {
+		final FileSystem fileSystem = new RealFileSystem( );
+
+		final URL fileUrl = getClass( ).getResource( "file.txt" );
+		final Path filePath = Paths.get( fileUrl.toURI( ) );
+		final Path rootPath = filePath.getParent( );
+		final Either<RootDirectoryCannotBeAccessed, List<File>> result = fileSystem.listFilesInDirectory( rootPath );
+
+		assertThat( result.isRight( ) ).isTrue( );
+		final List<File> list = result.get( );
+		assertThat( list ).filteredOn( f -> f.getExtension( ).exists( e -> e.equals( "txt" ) ) ).hasSize( 2 );
+		assertThat( list ).filteredOn( f -> f.getExtension( ).isEmpty( ) ).hasSize( 1 );
+	}
 
 	@Test
 	@DisplayName( "listFilesInDirectory should return error" )
@@ -42,11 +64,30 @@ final class RealFileSystemTest {
 		final Option<FilesCannotBeRemoved> result = fileSystem.removeFiles( Collections.singletonList( file ) );
 
 		assertThat( result.isDefined( ) ).isTrue( );
+		final FilesCannotBeRemoved error = result.get( );
+		assertThat( error.getUnremovableFiles( ) ).containsExactly( file );
 	}
 
 	@Test
-	@DisplayName( "readBytes on non-existing file should return empty optional" )
-	void readBytesOnNonExistingFileShouldReturnEmptyOptional( ) {
+	@DisplayName( "removeFiles should return empty option" )
+	void removeFilesShouldReturnEmptyOption( ) throws URISyntaxException, IOException {
+		final FileSystem fileSystem = new RealFileSystem( );
+
+		final URL fileUrl = getClass( ).getResource( "file.txt" );
+		final Path filePath = Paths.get( fileUrl.toURI( ) );
+		final Path tempFilePath = tempDir.resolve( "file.txt" );
+		Files.copy( filePath, tempFilePath );
+
+		final File file = new File( tempFilePath, ".txt", tempDir );
+		final Option<FilesCannotBeRemoved> result = fileSystem.removeFiles( Collections.singletonList( file ) );
+
+		assertThat( result.isEmpty( ) ).isTrue( );
+		assertThat( Files.exists( tempFilePath ) ).isFalse( );
+	}
+
+	@Test
+	@DisplayName( "readBytes on non-existing file should return empty option" )
+	void readBytesOnNonExistingFileShouldReturnEmptyOption( ) {
 		final FileSystem fileSystem = new RealFileSystem( );
 
 		final File file = new File( Paths.get( "doesNotExist.txt" ), ".txt", Paths.get( "." ) );

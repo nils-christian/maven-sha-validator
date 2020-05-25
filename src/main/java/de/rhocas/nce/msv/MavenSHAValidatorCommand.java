@@ -59,7 +59,7 @@ public final class MavenSHAValidatorCommand implements Callable<Integer> {
 		if ( remove ) {
 			final Option<FilesCannotBeRemoved> optionalError = removeInvalidFiles.remove( invalidFiles );
 			if ( !optionalError.isEmpty( ) ) {
-				console.printError( MessageFormat.format( "Following files could not be removed:", optionalError.get( ).getUnremovableFiles( ) ) );
+				console.printError( MessageFormat.format( "Following files could not be removed: {0}", optionalError.get( ).getUnremovableFiles( ) ) );
 				return -2;
 			}
 		}
